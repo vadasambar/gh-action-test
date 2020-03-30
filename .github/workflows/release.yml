@@ -1,0 +1,22 @@
+name: Deploy App on GKE cluster.
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Update image to latest again tag.
+      uses: ameydev/yaml-find-key-replace-value@master
+      with:
+        FILE_PATTERN: <k8s-manifest>-yaml
+        FIND_KEY: image
+        REPLACE_VALUE_PATTERN: yaml.EXISTING_VALUE_WT+:+env.GITHUB_SHA
+    - name: kubectl - Google Cloud GKE cluster.
+      uses: ameydev/gke-kubectl-action@master
+      env:
+        PROJECT_ID: ${{ secrets.PROJECT_ID }}
+        APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        CLUSTER_NAME: ${{ secrets.GKE_CLUSTER_NAME }}
+        ZONE_NAME: southamerica-east1-b
+      with:
+        args: apply -f <k8s-manifest>-yaml
