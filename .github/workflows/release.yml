@@ -8,7 +8,7 @@ jobs:
     - name: Update image to latest again tag.
       uses: ameydev/yaml-find-key-replace-value@master
       with:
-        FILE_PATTERN: <k8s-manifest>-yaml
+        FILE_PATTERN: packaging/k8s/manifests/*.yaml
         FIND_KEY: image
         REPLACE_VALUE_PATTERN: yaml.EXISTING_VALUE_WT+:+env.GITHUB_SHA
     - name: kubectl - Google Cloud GKE cluster.
@@ -19,4 +19,4 @@ jobs:
         CLUSTER_NAME: ${{ secrets.GKE_CLUSTER_NAME }}
         ZONE_NAME: southamerica-east1-b
       with:
-        args: apply -f <k8s-manifest>-yaml
+        args: apply -f packaging/k8s/manifests/
